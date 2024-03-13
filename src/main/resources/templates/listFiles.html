@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	
+	<link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/css/jquery.dataTables_themeroller.css">
+    <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js"></script>
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}" />
+
+<head>
+<title>File manager app</title>
+</head>
+<body>
+
+	 <nav class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="container">
+	   <div class="navbar-header">
+	    <button type="button" class="navbar-toggle collapsed"
+	     data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+	     aria-controls="navbar">
+	     <span class="sr-only">Toggle navigation</span> <span
+	      class="icon-bar"></span> <span class="icon-bar"></span> <span
+	      class="icon-bar"></span>
+	    </button>
+	    <a class="navbar-brand" href="#" th:href="@{/}">File Manager</a>
+	    <h5 sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></h5>
+	   </div>
+	  </div>
+	 </nav> <br><br><br>
+
+   <div class="container">
+		    <div>
+		        <h1>List of Posts</h1>
+		    </div>
+		    <div>
+		    <div>
+		    <table id="example"  class="table">
+
+			    <thead>
+			        <tr>
+		                <th>
+						<a th:href="@{'/page/' + ${currentPage} + '?sortField=fileName&sortDir=' + ${reverseSortDir}}">
+							User Name</a>
+					</th>
+					<th>
+					<a th:href="@{'/page/' + ${currentPage} + '?sortField=fileName&sortDir=' + ${reverseSortDir}}">
+							File Name</a>
+					</th>
+					<th>
+					<a th:href="@{'/page/' + ${currentPage} + '?sortField=fileType&sortDir=' + ${reverseSortDir}}">
+							File Type</a>
+					</th>
+					<th> Download </th>
+					<th> Delete </th>
+			        </tr>
+			    </thead>
+			    <tbody>
+			        <tr th:each="post: ${listFiles}">
+			        	<td th:utext="${post.firstName}"></td>
+			            <td th:utext="${post.fileName}"></td>
+		                <td th:utext="${post.fileType}"></td>
+		                <td><a th:href="@{/downloadFile/{fileId}(fileId=${post.id})}">Download</a></td> 
+		                <td ><a th:href="@{/files/delete(id=${post.id})}"> Delete</a></td>
+			        </tr>
+			    </tbody>
+			</table>
+			</div><br><br>
+			<div th:if = "${totalPages > 1}">
+			   <div class = "row col-sm-10">
+			    <div class = "col-sm-2">
+			     Total Rows: [[${totalItems}]] 
+			    </div>
+			    <div class = "col-sm-1">
+			     <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+			      <a th:if="${currentPage != i}" th:href="@{'/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+			      <span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+			     </span>
+			    </div>
+			    <div class = "col-sm-1">
+			     <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+			     <span th:unless="${currentPage < totalPages}">Next</span>
+			    </div>
+			    
+			     <div class="col-sm-1">
+			        <a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+			     <span th:unless="${currentPage < totalPages}">Last</span>
+			        </div>
+			   </div>
+		    </div>
+	</div>
+		    <a th:href="@{/}">[Go Home]</a> 
+		
+	 <script>
+		var table = $('#example').DataTable();
+ 
+		// #myInput is a <input type="text"> element
+		$('#myInput').on( 'keyup', function () {
+		    table.search( this.value ).draw();
+		} );
+	</script>
+		
+</body>
+</html>
